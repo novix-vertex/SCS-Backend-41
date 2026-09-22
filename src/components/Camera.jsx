@@ -1,3 +1,4 @@
+import { FaceDetector, FilesetResolver } from "@mediapipe/tasks-vision";
 import { useEffect, useRef } from "react"
 
 const Camera = () => {
@@ -25,7 +26,26 @@ const Camera = () => {
             videoRef.current.srcObject = stream;
 
         }
+
+        const createFaceDetector = async () => {
+            const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm")
+
+            const detector = await FaceDetector.createFromOptions(
+                vision,
+                {
+                    baseOptions: {
+                        modelAssetPath: "/models/blaze_face_short_range.tflite"
+                    },
+                    runningMode: "VIDEO"
+                }
+            );
+            console.log("Face detector created", detector);
+
+        }
+
         startCamera();
+        createFaceDetector();
+
     }, [])
     return (
         <video
